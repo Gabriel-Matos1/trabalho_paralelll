@@ -1,0 +1,130 @@
+ci1316/ci316 - PROGRAMAÇÃO PARALELA - 
+1o semestre de 2023   
+por W.Zola/UFPR
+
+Lab 0: REDUÇÃO paralela com Pthreads   (versão 1.0)  
+------------------------------------
+Histórico:
+- v1.0 a versão inicial
+
+
+Objetivos: 
+ *Entender* uma implementação paralela eficiente 
+   para esse algoritmo "REDUÇÃO paralela"
+   em CPUs multicore usando PThreads
+
+ Esse lab é apenas para praticar e ser feito EM AULA!
+ (NÂO é para entregar nada!)
+ 
+ MAS, voce deve entender as etapas e
+  produzir os resultados de suas experiências conforme pedido.
+ PORQUE? 
+      porque alguns desses resultados SERVIRÂO para outros trabalhos
+      que serão feitos mais adiante no curso
+
+
+Roteiro:
+  - Baixar os arquivos da implementação da redução paralela
+    (link na UFPR virtual)
+    
+  - rodar o script "compila" na sua área linux no lab 
+    obtendo o seu programa executável
+    
+  - rodar o script "roda-todos.sh" e obter os resultados para a SUA maquina
+    (a máquina que você está usando no lab, 
+    ATENÇÂO: NAO rodar na macalan nem na orval, 
+    rode na SUA máquina local do lab)
+  
+  - Obter os resultados do script e iserir na planilha de resultados
+    (aba 3 da planilha, que tem o nome "resultados")
+    
+  - Ao fazer isso (se foi feito adequadamente) os gráficos devem estar
+    automaticamente atualizados na planilha (aba "graficos") 
+    para seus resultados
+    agora VOCE deve ajustar as escalas dos gráficos se essas não estiverem 
+    adequadas
+    Voce deve também colocar o nome da maquina que voce usou no topo
+    da folha (substituindo o nome b9s)
+    
+  - Rode o programa lscpu no terminal na sua maquina e atualize a planilha
+    na aba de nome "hardware"
+    
+  - rode o programa lstopo 
+     (tar.xz já compilado para linux está na UFPR virtual)
+     obtenha o .pdf da topologia do seu processador como indicado
+     na aba "topologia" da planilha
+     e substitua o PDF que está lá com a topologia da SUA máquina
+     (ATENÇÂO: não coloque figura em jpg nem png, uSE PDF
+      que é legível para qualquer tamanho e pode ser buscado texto no mesmo)
+      
+  - Mude os titulos que estiverem errados nos gráficos
+    (nesse caso. apenas o titulo "i7-11300 (4 cores, 8 hyperthreads)"
+    deve ser mudado para refletir o SEU hardware
+    
+  - Observe no gráfico a escalabilidade da implementação (aceleração e vazão,
+    em relação ao número de threads)
+    Verificando os detalhes do seu hardware tente entender como e porque 
+    a implementaçao do algoritmo se comportou no seu hardware.
+    Hove alguma diferença em relação ao hardware do professor ?
+    
+-------------------------------------------------
+
+Descrição dessa implementação REDUÇÃO paralela com Pthreads  
+-----------------------------------------------------------             
+   
+         
+// será feita a redução com operação de soma de floats 
+//  (operação +, somando dois floats de cada vez)
+//   usando nThreads (definida via linha de comando)
+
+
+// Funcionamento:
+// Entrada para a operação ReducePlus será: 
+//   um vetor de nTotalElements elementos 
+//   (nTotalElements obtido da linha de comando)
+// Para esse teste o vetor NÂO será lido, 
+//   - o vetor será preenchido sequencialmente pela função main
+
+//  Utilização do programa:
+//  usage: ./reduceSumPth <nTotalElements> <nThreads>
+
+// ENTRADA para o algoritmo:
+// A entrada para a função PthPrefixSum será: 
+//   um vetor (GLOBAL) de nTotalElements números inteiros
+//   chamado InputVector
+//   (nTotalElements obtido da linha de comando)
+//
+
+// SAIDA do o algoritmo:
+// Cada thread terá irá fazer a redução de nTotalElements / nThreads elementos
+// A última thread poderá reduzir menos que nTotalElements / nThreads elementos
+//   quando n não for múltiplo de nThreads
+// Cada thread irá produzir seu resultado no vetor partialSum
+// Todas as threads sincronizam com uma barreira
+// Após sincronização com barreira:
+//   - a thread 0 (main) irá calcular e imprimir a soma global sequencialmente 
+//   - as threads diferentes de 0 irão simplesmente terminar
+
+// o programa deve calcular e imprimir o tempo de calculo da reducao
+
+
+// rodar o programa 10 vezes obtendo o tempo MÉDIO
+//  colocar TODOS os resultados em planilha
+
+// Colocar em uma planilha (tabela) os tempos para
+// 1, 2, 3, 4, 5, 6, 7, e 8 threads
+// A última coluna da tabela (planilha) deve calcular 
+//  a aceleração para 1, 2, 3, 4, 5, 6, 7, e 8 threads
+// colocando em uma planilha (tabela)
+
+
+OBS: o número de vezes que devemos rodar os experimentos deveria ser
+     maior que 30 vezes para se obter resultados mais confiáveis.
+     Voce deve desligar todos os browsers da sua máquina e outros programas 
+     que possam atrapalhar suas medidas
+     Para esse lab repetiremos APENAS 10 vezes cada experiência,
+     e espera-se que seus resultados sejam consistentes com seu hardware e
+     NÂO tenham muita variação significativa nas medições entre rodadas  
+   
+
+--------------------------------------

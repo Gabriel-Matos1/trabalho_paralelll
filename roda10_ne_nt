@@ -1,0 +1,11 @@
+./reduceSumPth  $1 $2 | grep 'reduce\|Throughput' | tee resuldados
+./reduceSumPth  $1 $2 | grep 'Throughput' >>resultados ; tail -n1 resultados
+./reduceSumPth  $1 $2 | grep 'Throughput' >>resultados ; tail -n1 resultados
+./reduceSumPth  $1 $2 | grep 'Throughput' >>resultados ; tail -n1 resultados
+./reduceSumPth  $1 $2 | grep 'Throughput' >>resultados ; tail -n1 resultados
+./reduceSumPth  $1 $2 | grep 'Throughput' >>resultados ; tail -n1 resultados
+./reduceSumPth  $1 $2 | grep 'Throughput' >>resultados ; tail -n1 resultados
+./reduceSumPth  $1 $2 | grep 'Throughput' >>resultados ; tail -n1 resultados
+./reduceSumPth  $1 $2 | grep 'Throughput' >>resultados ; tail -n1 resultados
+./reduceSumPth  $1 $2 | grep 'Throughput' >>resultados ; tail -n1 resultados
+
