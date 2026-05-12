@@ -476,7 +476,6 @@ int main(int argc, char *argv[])
         garante que ambas as versões (1 thread e N threads) calculem o
         histograma sobre os mesmos intervalos.
         */
-        // static void build_limits_sp2_serial(const long long *Input, long long n, int npivots,int nbins,long long *pivots,long long *limits ){
 
         long long *limits = (long long *)malloc((numero_faixas_histograma + 1) * sizeof(long long));
         long long *pivots = (long long *)malloc(numero_separadores_pivot * sizeof(long long));
@@ -552,5 +551,17 @@ int main(int argc, char *argv[])
         free(vetor2);
 
     }
+
+/*
+    chrono_reportTime( &parallelReductionTime, "parallelReductionTime" );
+    
+    // calcular e imprimir a VAZAO (numero de operacoes/s)
+    double total_time_in_seconds = (double) chrono_gettotal( &parallelReductionTime ) /
+                                      ((double)1000*1000*1000);
+    printf( "total_time_in_seconds: %lf s\n", total_time_in_seconds );
+                                  
+    double OPS = ((double)numero_elementos*numero_rodadas_execucao)/total_time_in_seconds;
+    printf( "Throughput: %lf OP/s\n", OPS );
+  */  
     return 0;
 }
