@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -O2 -Wall -Wextra -pthread
+CFLAGS = -O2 -fgnu89-inline -Wall -Wextra -pthread
 
 TARGET = teste
 SRC = teste.c

@@ -221,7 +221,7 @@ int main( int argc, char *argv[] )
     } else {
          nThreads = atoi( argv[2] );
          if( nThreads == 0 ) {
-              printf( "usage: %s <nTotalElements> <nThreads>\n" ,
+              printf( "usage: %s <nTotalElemegit push -u origin mainnts> <nThreads>\n" ,
                  argv[0] );
               printf( "<nThreads> can't be 0\n" );
               return 0;
