@@ -74,19 +74,25 @@ static unsigned long long descobrir_tamanho_L3()
     return tamanho;
 }
 
-static int achar_qual_faixa(long long numero, long long *limits, int n_faixas)
-{
-    for (int b = 0; b < n_faixas - 1; b++)
-    {
-        if (numero < limits[b + 1])
-        {
-            return b;
+static int busca_binaria(   long long valor,long long *limits,int n_faixa){
+   
+    int comeco = 0;
+    int fim = n_faixa - 1;
+
+    while(comeco <= fim){
+        int meio = (comeco + fim) / 2;
+
+        if(valor < limits[meio]){
+            fim = meio - 1;
+        }else if(valor >= limits[meio + 1]){
+            comeco = meio + 1;
+        }else{
+            return meio;
         }
     }
+    return n_faixa - 1;
 
-    return n_faixas - 1;
 }
-
 //!-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 static inline void ll_swap(long long *a, long long *b)
@@ -125,13 +131,13 @@ void cache_evadir()
 
 //!-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-static int partition(long long *v, int low, int high)
+static int partition(long long *v, int menor, int maior)
 {
-    long long pivot = v[high];
+    long long pivot = v[maior];
 
-    int i = low - 1;
+    int i = menor - 1;
 
-    for (int j = low; j < high; j++)
+    for (int j = menor; j < maior; j++)
     {
 
         if (v[j] <= pivot)
@@ -141,23 +147,23 @@ static int partition(long long *v, int low, int high)
         }
     }
 
-    ll_swap(&v[i + 1], &v[high]);
+    ll_swap(&v[i + 1], &v[maior]);
 
     return i + 1;
 }
 
 //!-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-static void quicksort_ll(long long *v, int low, int high)
+static void quicksort_ll(long long *v, int menor, int maior)
 {
-    if (low < high)
+    if (menor < maior)
     {
 
-        int pi = partition(v, low, high);
+        int pi = partition(v, menor, maior);
 
-        quicksort_ll(v, low, pi - 1);
+        quicksort_ll(v, menor, pi - 1);
 
-        quicksort_ll(v, pi + 1, high);
+        quicksort_ll(v, pi + 1, maior);
     }
 }
 
@@ -256,7 +262,13 @@ static inline long long rand64(void)
 
 //!-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-static void build_limits_sp2_serial(const long long *Input, long long n, int npivots, int nbins, long long *pivots, long long *limits)
+static void build_limits_sp2_serial(
+    const long long *Input,
+    long long n,
+    int npivots,
+    int nbins,
+    long long *pivots,
+    long long *limits)
 {
     if (npivots < nbins || npivots > n)
     {
@@ -278,10 +290,13 @@ static void build_limits_sp2_serial(const long long *Input, long long n, int npi
         pivots[i] = Input[pos];
     }
 
+    // ordena pivots
     quicksort_ll(pivots, 0, npivots - 1);
 
+    // extremos
     limits[0] = LLONG_MIN;
 
+    // seleciona limites
     for (int j = 1; j < nbins; j++)
     {
         int pidx =
@@ -291,6 +306,18 @@ static void build_limits_sp2_serial(const long long *Input, long long n, int npi
     }
 
     limits[nbins] = LLONG_MAX;
+
+    // empurrão suave
+    for (int k = 1; k <= nbins - 1; k++)
+    {
+        if (limits[k] <= limits[k - 1])
+        {
+            if (limits[k - 1] < LLONG_MAX - 1)
+                limits[k] = limits[k - 1] + 1;
+            else
+                limits[k] = limits[k - 1];
+        }
+    }
 }
 //!-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -313,6 +340,18 @@ static void gen_test_data_balanced2(long long *data, long long nelements, int n_
 }
 
 //**----------------------------------------------------- Funções criadas ------------------------------------------------------------------------------------////////////
+
+void histogram_serial(long long *data, long long n, long long *limits, int n_faixas, long long *hist){
+    for (int b = 0; b < n_faixas; b++){
+        hist[b] = 0;
+    }
+    for (long long i = 0; i < n; i++){
+
+        int bin = busca_binaria(data[i], limits, n_faixas);
+
+        hist[bin]++;
+    }
+}
 
 void *parallel_hist_worker(void *ptr)
 {
@@ -337,8 +376,7 @@ void *parallel_hist_worker(void *ptr)
 
         for (long long i = first; i < last; i++)
         {
-            int faixa =
-                achar_qual_faixa(parallel_data[i], paralle_limites, paralel_n_faixas);
+            int faixa =busca_binaria(parallel_data[i], paralle_limites, paralel_n_faixas);
 
             local_hist[tid][faixa]++;
         }
@@ -360,23 +398,22 @@ void parallel_hist(long long *data, long long n, long long *limits, int n_faixas
     paralel_n_faixas = n_faixas;
     paralle_nThreads = nThreads;
 
+    if(nThreads == 1){
+    histogram_serial(data, n, limits, n_faixas, hist);
+        return;
+    }
     if (!initialized)
     {
 
-        pthread_barrier_init(
-            &parallel_barrier,
-            NULL,
-            nThreads + 1 // workers + main
-        );
+        pthread_barrier_init(&parallel_barrier,NULL,nThreads + 1);
 
         local_hist = malloc(nThreads * sizeof(long long *));
 
-        for (int t = 0; t < nThreads; t++)
-            local_hist[t] =
-                calloc(n_faixas, sizeof(long long));
+        for (int t = 0; t < nThreads; t++){
+            local_hist[t] =calloc(n_faixas, sizeof(long long));
+        }
 
-        for (int t = 0; t < nThreads; t++)
-        {
+        for (int t = 0; t < nThreads; t++){
             parallel_thread_id[t] = t;
 
             pthread_create(&parallel_Thread[t], NULL, parallel_hist_worker, &parallel_thread_id[t]);
@@ -401,42 +438,23 @@ void parallel_hist(long long *data, long long n, long long *limits, int n_faixas
 }
 //!-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void histogram_serial(long long *data, long long n, long long *limits, int n_faixas, long long *hist)
-{
-    for (int b = 0; b < n_faixas; b++)
-        hist[b] = 0;
-
-    for (long long i = 0; i < n; i++)
-    {
-
-        int bin = achar_qual_faixa(data[i], limits, n_faixas);
-
-        hist[bin]++;
-    }
-}
-
 //!-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void randomizador(long long n_elementos, int tb2, int numero_faixas_hist, long long *vetor_final)
-{
+void randomizador(long long n_elementos, int tb2, int numero_faixas_hist, long long *vetor_final){
 
-    if (vetor_final == NULL)
-    {
+    if (vetor_final == NULL){
         fprintf(stderr, "erro ao alocar memória para vetor_final\n");
         exit(1);
     }
     int count = 0;
-    for (long long i = 0; i < n_elementos; i++)
-    {
+    for (long long i = 0; i < n_elementos; i++){
         vetor_final[i] = rand64();
         count++;
     }
 
-    if (tb2 == 1)
-    {
+    if (tb2 == 1){
         gen_test_data_balanced2(vetor_final, n_elementos, numero_faixas_hist);
 
-//        printf("\nentrou no loop tb2 -> quantidade de numeros gerados->> %d \n", count);
     }
 
     return;
@@ -499,11 +517,9 @@ int main(int argc, char *argv[])
 
 //!----------------------limites---------------------------
 
-        long long *limits =
-            malloc((numero_faixas_histograma + 1) * sizeof(long long));
+        long long *limits = malloc((numero_faixas_histograma + 1) * sizeof(long long));
 
-        long long *pivots =
-            malloc(numero_separadores_pivot * sizeof(long long));
+        long long *pivots = malloc(numero_separadores_pivot * sizeof(long long));
 
         chronometer_t chrono_blser;
 
@@ -545,13 +561,12 @@ int main(int argc, char *argv[])
         int ok = verify_histogram(vetor1, numero_elementos, limits, numero_faixas_histograma, hist_serial, hist_parallel);
 
 //!----------------------calcular tempo do round---------------------------
-        if (r == 0)
-        {
+        if (r == 0){
             printf("\nROUND %d: first 8 partitions\n", r);
             printf("  Bin  ;          Lo (inclusive)  ;          Hi (exclusive)  ;         Count\n");
-            for (int p = 0; p < 8 && p < numero_faixas_histograma; p++)
-            {
-                printf("%6d ; %24lld ; %24lld ; %15lld\n",(p+1),limits[p],limits[p + 1],hist_serial[p]);
+            for (int p = 0; p < 8 && p < numero_faixas_histograma; p++){
+                printf("%6d ; %24lld ; %24lld ; %15lld\n",p,limits[p],limits[p + 1],hist_serial[p]);
+
             }
             printf("\nROUND %d: first 8 partitions\n", r);
             printf("Round ;  T(bl_ser) s ;    T(1 thr) s ;   T(N thr) s ;    Speedup ; OK?\n");
