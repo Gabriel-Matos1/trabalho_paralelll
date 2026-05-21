@@ -1,0 +1,368 @@
+=================================
+THREADS = 1
+=================================
+=== Parallel Histogram — Scalability Test (Persistent Thread Pool) ===
+  Elements : 4000000  |  Pivots : 1024  |  Bins : 256  |  Threads : 1  |  Rounds : 10  |  Input : uniform random in [0,n_faixas) (-tb2)
+  LLC size : 4 MiB  |  Eviction buffer : 12 MiB
+
+
+ROUND 0: first 8 partitions
+  Bin  ;          Lo (inclusive)  ;          Hi (exclusive)  ;         Count
+     0 ;     -9223372036854775808 ;                        0 ;               0
+     1 ;                        0 ;                        1 ;           15625
+     2 ;                        1 ;                        2 ;           15625
+     3 ;                        2 ;                        3 ;           15625
+     4 ;                        3 ;                        4 ;           15625
+     5 ;                        4 ;                        5 ;           15625
+     6 ;                        5 ;                        6 ;           15625
+     7 ;                        6 ;                        7 ;           15625
+
+ROUND 0: first 8 partitions
+Round ;  T(bl_ser) s ;    T(1 thr) s ;   T(N thr) s ;    Speedup ; OK?
+----- ;------------- ;-------------- ;------------- ;----------- ; ----
+  1     ;     0.000261 ;     0.211766 ;     0.210611 ;      1.005 ; OK
+  2     ;     0.000259 ;     0.210491 ;     0.212804 ;      0.989 ; OK
+  3     ;     0.000261 ;     0.210580 ;     0.212082 ;      0.993 ; OK
+  4     ;     0.000256 ;     0.216165 ;     0.216507 ;      0.998 ; OK
+  5     ;     0.000272 ;     0.213895 ;     0.216378 ;      0.989 ; OK
+  6     ;     0.000262 ;     0.210592 ;     0.213371 ;      0.987 ; OK
+  7     ;     0.000260 ;     0.212936 ;     0.210675 ;      1.011 ; OK
+  8     ;     0.000261 ;     0.212051 ;     0.211558 ;      1.002 ; OK
+  9     ;     0.000285 ;     0.212714 ;     0.214814 ;      0.990 ; OK
+  10    ;     0.000261 ;     0.211013 ;     0.211729 ;      0.997 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+  AVG   ;     0.000264 ;     0.212220 ;     0.213053 ;      0.996 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+
+=== Summary ===
+  Avg build_limits serial   : 0.000264 s
+  Avg time  (1 thread )     : 0.212220 s ; 18.85 MEPS
+  Avg time  (1 threads)    : 0.213053 s ; 18.77 MEPS
+  Avg histogram speedup     : 0.996x
+
+  Parallel efficiency:
+  with nthreads (1)        : 99.6%
+
+  Overall correctness       : PASS
+=================================
+THREADS = 2
+=================================
+=== Parallel Histogram — Scalability Test (Persistent Thread Pool) ===
+  Elements : 4000000  |  Pivots : 1024  |  Bins : 256  |  Threads : 2  |  Rounds : 10  |  Input : uniform random in [0,n_faixas) (-tb2)
+  LLC size : 4 MiB  |  Eviction buffer : 12 MiB
+
+
+ROUND 0: first 8 partitions
+  Bin  ;          Lo (inclusive)  ;          Hi (exclusive)  ;         Count
+     0 ;     -9223372036854775808 ;                        0 ;               0
+     1 ;                        0 ;                        1 ;           15625
+     2 ;                        1 ;                        2 ;           15625
+     3 ;                        2 ;                        3 ;           15625
+     4 ;                        3 ;                        4 ;           15625
+     5 ;                        4 ;                        5 ;           15625
+     6 ;                        5 ;                        6 ;           15625
+     7 ;                        6 ;                        7 ;           15625
+
+ROUND 0: first 8 partitions
+Round ;  T(bl_ser) s ;    T(1 thr) s ;   T(N thr) s ;    Speedup ; OK?
+----- ;------------- ;-------------- ;------------- ;----------- ; ----
+  1     ;     0.000261 ;     0.211395 ;     0.123992 ;      1.705 ; OK
+  2     ;     0.000345 ;     0.210470 ;     0.123223 ;      1.708 ; OK
+  3     ;     0.000344 ;     0.210337 ;     0.123967 ;      1.697 ; OK
+  4     ;     0.000345 ;     0.214303 ;     0.123990 ;      1.728 ; OK
+  5     ;     0.000360 ;     0.211352 ;     0.124455 ;      1.698 ; OK
+  6     ;     0.000348 ;     0.216548 ;     0.125131 ;      1.731 ; OK
+  7     ;     0.000344 ;     0.216160 ;     0.125165 ;      1.727 ; OK
+  8     ;     0.000345 ;     0.211054 ;     0.125989 ;      1.675 ; OK
+  9     ;     0.000345 ;     0.210252 ;     0.124289 ;      1.692 ; OK
+  10    ;     0.000344 ;     0.211931 ;     0.128286 ;      1.652 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+  AVG   ;     0.000338 ;     0.212380 ;     0.124849 ;      1.701 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+
+=== Summary ===
+  Avg build_limits serial   : 0.000338 s
+  Avg time  (1 thread )     : 0.212380 s ; 18.83 MEPS
+  Avg time  (2 threads)    : 0.124849 s ; 32.04 MEPS
+  Avg histogram speedup     : 1.701x
+
+  Parallel efficiency:
+  with nthreads (2)        : 85.1%
+
+  Overall correctness       : PASS
+=================================
+THREADS = 3
+=================================
+=== Parallel Histogram — Scalability Test (Persistent Thread Pool) ===
+  Elements : 4000000  |  Pivots : 1024  |  Bins : 256  |  Threads : 3  |  Rounds : 10  |  Input : uniform random in [0,n_faixas) (-tb2)
+  LLC size : 4 MiB  |  Eviction buffer : 12 MiB
+
+
+ROUND 0: first 8 partitions
+  Bin  ;          Lo (inclusive)  ;          Hi (exclusive)  ;         Count
+     0 ;     -9223372036854775808 ;                        0 ;               0
+     1 ;                        0 ;                        1 ;           15625
+     2 ;                        1 ;                        2 ;           15625
+     3 ;                        2 ;                        3 ;           15625
+     4 ;                        3 ;                        4 ;           15625
+     5 ;                        4 ;                        5 ;           15625
+     6 ;                        5 ;                        6 ;           15625
+     7 ;                        6 ;                        7 ;           15625
+
+ROUND 0: first 8 partitions
+Round ;  T(bl_ser) s ;    T(1 thr) s ;   T(N thr) s ;    Speedup ; OK?
+----- ;------------- ;-------------- ;------------- ;----------- ; ----
+  1     ;     0.000261 ;     0.215129 ;     0.085504 ;      2.516 ; OK
+  2     ;     0.000351 ;     0.213322 ;     0.086307 ;      2.472 ; OK
+  3     ;     0.000348 ;     0.210554 ;     0.082395 ;      2.555 ; OK
+  4     ;     0.000349 ;     0.211325 ;     0.083591 ;      2.528 ; OK
+  5     ;     0.000352 ;     0.210979 ;     0.082607 ;      2.554 ; OK
+  6     ;     0.000351 ;     0.211468 ;     0.084062 ;      2.516 ; OK
+  7     ;     0.000346 ;     0.214715 ;     0.082332 ;      2.608 ; OK
+  8     ;     0.000349 ;     0.212191 ;     0.083667 ;      2.536 ; OK
+  9     ;     0.000350 ;     0.211711 ;     0.084576 ;      2.503 ; OK
+  10    ;     0.000348 ;     0.210645 ;     0.083756 ;      2.515 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+  AVG   ;     0.000340 ;     0.212204 ;     0.083880 ;      2.530 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+
+=== Summary ===
+  Avg build_limits serial   : 0.000340 s
+  Avg time  (1 thread )     : 0.212204 s ; 18.85 MEPS
+  Avg time  (3 threads)    : 0.083880 s ; 47.69 MEPS
+  Avg histogram speedup     : 2.530x
+
+  Parallel efficiency:
+  with nthreads (3)        : 84.3%
+
+  Overall correctness       : PASS
+=================================
+THREADS = 4
+=================================
+=== Parallel Histogram — Scalability Test (Persistent Thread Pool) ===
+  Elements : 4000000  |  Pivots : 1024  |  Bins : 256  |  Threads : 4  |  Rounds : 10  |  Input : uniform random in [0,n_faixas) (-tb2)
+  LLC size : 4 MiB  |  Eviction buffer : 12 MiB
+
+
+ROUND 0: first 8 partitions
+  Bin  ;          Lo (inclusive)  ;          Hi (exclusive)  ;         Count
+     0 ;     -9223372036854775808 ;                        0 ;               0
+     1 ;                        0 ;                        1 ;           15625
+     2 ;                        1 ;                        2 ;           15625
+     3 ;                        2 ;                        3 ;           15625
+     4 ;                        3 ;                        4 ;           15625
+     5 ;                        4 ;                        5 ;           15625
+     6 ;                        5 ;                        6 ;           15625
+     7 ;                        6 ;                        7 ;           15625
+
+ROUND 0: first 8 partitions
+Round ;  T(bl_ser) s ;    T(1 thr) s ;   T(N thr) s ;    Speedup ; OK?
+----- ;------------- ;-------------- ;------------- ;----------- ; ----
+  1     ;     0.000263 ;     0.210265 ;     0.062142 ;      3.384 ; OK
+  2     ;     0.000471 ;     0.211736 ;     0.062485 ;      3.389 ; OK
+  3     ;     0.000344 ;     0.210396 ;     0.061756 ;      3.407 ; OK
+  4     ;     0.000344 ;     0.213644 ;     0.061995 ;      3.446 ; OK
+  5     ;     0.000344 ;     0.216821 ;     0.061972 ;      3.499 ; OK
+  6     ;     0.000347 ;     0.211784 ;     0.063007 ;      3.361 ; OK
+  7     ;     0.000342 ;     0.210524 ;     0.061827 ;      3.405 ; OK
+  8     ;     0.000343 ;     0.211133 ;     0.062014 ;      3.405 ; OK
+  9     ;     0.000349 ;     0.210971 ;     0.061558 ;      3.427 ; OK
+  10    ;     0.000343 ;     0.211577 ;     0.061664 ;      3.431 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+  AVG   ;     0.000349 ;     0.211885 ;     0.062042 ;      3.415 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+
+=== Summary ===
+  Avg build_limits serial   : 0.000349 s
+  Avg time  (1 thread )     : 0.211885 s ; 18.88 MEPS
+  Avg time  (4 threads)    : 0.062042 s ; 64.47 MEPS
+  Avg histogram speedup     : 3.415x
+
+  Parallel efficiency:
+  with nthreads (4)        : 85.4%
+
+  Overall correctness       : PASS
+=================================
+THREADS = 5
+=================================
+=== Parallel Histogram — Scalability Test (Persistent Thread Pool) ===
+  Elements : 4000000  |  Pivots : 1024  |  Bins : 256  |  Threads : 5  |  Rounds : 10  |  Input : uniform random in [0,n_faixas) (-tb2)
+  LLC size : 4 MiB  |  Eviction buffer : 12 MiB
+
+
+ROUND 0: first 8 partitions
+  Bin  ;          Lo (inclusive)  ;          Hi (exclusive)  ;         Count
+     0 ;     -9223372036854775808 ;                        0 ;               0
+     1 ;                        0 ;                        1 ;           15625
+     2 ;                        1 ;                        2 ;           15625
+     3 ;                        2 ;                        3 ;           15625
+     4 ;                        3 ;                        4 ;           15625
+     5 ;                        4 ;                        5 ;           15625
+     6 ;                        5 ;                        6 ;           15625
+     7 ;                        6 ;                        7 ;           15625
+
+ROUND 0: first 8 partitions
+Round ;  T(bl_ser) s ;    T(1 thr) s ;   T(N thr) s ;    Speedup ; OK?
+----- ;------------- ;-------------- ;------------- ;----------- ; ----
+  1     ;     0.000263 ;     0.210708 ;     0.050348 ;      4.185 ; OK
+  2     ;     0.000344 ;     0.210734 ;     0.051014 ;      4.131 ; OK
+  3     ;     0.000351 ;     0.213769 ;     0.049524 ;      4.316 ; OK
+  4     ;     0.000355 ;     0.214749 ;     0.049970 ;      4.298 ; OK
+  5     ;     0.000356 ;     0.216896 ;     0.050834 ;      4.267 ; OK
+  6     ;     0.000348 ;     0.211249 ;     0.050489 ;      4.184 ; OK
+  7     ;     0.000345 ;     0.210356 ;     0.049542 ;      4.246 ; OK
+  8     ;     0.000367 ;     0.214129 ;     0.049619 ;      4.315 ; OK
+  9     ;     0.000346 ;     0.209872 ;     0.051177 ;      4.101 ; OK
+  10    ;     0.000390 ;     0.210917 ;     0.049551 ;      4.257 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+  AVG   ;     0.000346 ;     0.212338 ;     0.050207 ;      4.230 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+
+=== Summary ===
+  Avg build_limits serial   : 0.000346 s
+  Avg time  (1 thread )     : 0.212338 s ; 18.84 MEPS
+  Avg time  (5 threads)    : 0.050207 s ; 79.67 MEPS
+  Avg histogram speedup     : 4.230x
+
+  Parallel efficiency:
+  with nthreads (5)        : 84.6%
+
+  Overall correctness       : PASS
+=================================
+THREADS = 6
+=================================
+=== Parallel Histogram — Scalability Test (Persistent Thread Pool) ===
+  Elements : 4000000  |  Pivots : 1024  |  Bins : 256  |  Threads : 6  |  Rounds : 10  |  Input : uniform random in [0,n_faixas) (-tb2)
+  LLC size : 4 MiB  |  Eviction buffer : 12 MiB
+
+
+ROUND 0: first 8 partitions
+  Bin  ;          Lo (inclusive)  ;          Hi (exclusive)  ;         Count
+     0 ;     -9223372036854775808 ;                        0 ;               0
+     1 ;                        0 ;                        1 ;           15625
+     2 ;                        1 ;                        2 ;           15625
+     3 ;                        2 ;                        3 ;           15625
+     4 ;                        3 ;                        4 ;           15625
+     5 ;                        4 ;                        5 ;           15625
+     6 ;                        5 ;                        6 ;           15625
+     7 ;                        6 ;                        7 ;           15625
+
+ROUND 0: first 8 partitions
+Round ;  T(bl_ser) s ;    T(1 thr) s ;   T(N thr) s ;    Speedup ; OK?
+----- ;------------- ;-------------- ;------------- ;----------- ; ----
+  1     ;     0.000265 ;     0.213964 ;     0.045320 ;      4.721 ; OK
+  2     ;     0.000343 ;     0.210801 ;     0.041165 ;      5.121 ; OK
+  3     ;     0.000346 ;     0.210895 ;     0.042019 ;      5.019 ; OK
+  4     ;     0.000343 ;     0.211098 ;     0.041266 ;      5.116 ; OK
+  5     ;     0.000345 ;     0.213062 ;     0.041418 ;      5.144 ; OK
+  6     ;     0.000355 ;     0.213712 ;     0.042636 ;      5.012 ; OK
+  7     ;     0.000346 ;     0.212534 ;     0.042439 ;      5.008 ; OK
+  8     ;     0.000344 ;     0.212588 ;     0.042080 ;      5.052 ; OK
+  9     ;     0.000354 ;     0.210934 ;     0.041077 ;      5.135 ; OK
+  10    ;     0.000344 ;     0.210832 ;     0.041177 ;      5.120 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+  AVG   ;     0.000338 ;     0.212042 ;     0.042060 ;      5.045 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+
+=== Summary ===
+  Avg build_limits serial   : 0.000338 s
+  Avg time  (1 thread )     : 0.212042 s ; 18.86 MEPS
+  Avg time  (6 threads)    : 0.042060 s ; 95.10 MEPS
+  Avg histogram speedup     : 5.045x
+
+  Parallel efficiency:
+  with nthreads (6)        : 84.1%
+
+  Overall correctness       : PASS
+=================================
+THREADS = 7
+=================================
+=== Parallel Histogram — Scalability Test (Persistent Thread Pool) ===
+  Elements : 4000000  |  Pivots : 1024  |  Bins : 256  |  Threads : 7  |  Rounds : 10  |  Input : uniform random in [0,n_faixas) (-tb2)
+  LLC size : 4 MiB  |  Eviction buffer : 12 MiB
+
+
+ROUND 0: first 8 partitions
+  Bin  ;          Lo (inclusive)  ;          Hi (exclusive)  ;         Count
+     0 ;     -9223372036854775808 ;                        0 ;               0
+     1 ;                        0 ;                        1 ;           15625
+     2 ;                        1 ;                        2 ;           15625
+     3 ;                        2 ;                        3 ;           15625
+     4 ;                        3 ;                        4 ;           15625
+     5 ;                        4 ;                        5 ;           15625
+     6 ;                        5 ;                        6 ;           15625
+     7 ;                        6 ;                        7 ;           15625
+
+ROUND 0: first 8 partitions
+Round ;  T(bl_ser) s ;    T(1 thr) s ;   T(N thr) s ;    Speedup ; OK?
+----- ;------------- ;-------------- ;------------- ;----------- ; ----
+  1     ;     0.000263 ;     0.214534 ;     0.038967 ;      5.505 ; OK
+  2     ;     0.000345 ;     0.210247 ;     0.036579 ;      5.748 ; OK
+  3     ;     0.000344 ;     0.217119 ;     0.035998 ;      6.031 ; OK
+  4     ;     0.000347 ;     0.212016 ;     0.036381 ;      5.828 ; OK
+  5     ;     0.000363 ;     0.212029 ;     0.035980 ;      5.893 ; OK
+  6     ;     0.000522 ;     0.215956 ;     0.035364 ;      6.107 ; OK
+  7     ;     0.000344 ;     0.215963 ;     0.035318 ;      6.115 ; OK
+  8     ;     0.000344 ;     0.210841 ;     0.035714 ;      5.904 ; OK
+  9     ;     0.000345 ;     0.211695 ;     0.043998 ;      4.811 ; OK
+  10    ;     0.000345 ;     0.211103 ;     0.035367 ;      5.969 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+  AVG   ;     0.000356 ;     0.213150 ;     0.036967 ;      5.791 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+
+=== Summary ===
+  Avg build_limits serial   : 0.000356 s
+  Avg time  (1 thread )     : 0.213150 s ; 18.77 MEPS
+  Avg time  (7 threads)    : 0.036967 s ; 108.21 MEPS
+  Avg histogram speedup     : 5.791x
+
+  Parallel efficiency:
+  with nthreads (7)        : 82.7%
+
+  Overall correctness       : PASS
+=================================
+THREADS = 8
+=================================
+=== Parallel Histogram — Scalability Test (Persistent Thread Pool) ===
+  Elements : 4000000  |  Pivots : 1024  |  Bins : 256  |  Threads : 8  |  Rounds : 10  |  Input : uniform random in [0,n_faixas) (-tb2)
+  LLC size : 4 MiB  |  Eviction buffer : 12 MiB
+
+
+ROUND 0: first 8 partitions
+  Bin  ;          Lo (inclusive)  ;          Hi (exclusive)  ;         Count
+     0 ;     -9223372036854775808 ;                        0 ;               0
+     1 ;                        0 ;                        1 ;           15625
+     2 ;                        1 ;                        2 ;           15625
+     3 ;                        2 ;                        3 ;           15625
+     4 ;                        3 ;                        4 ;           15625
+     5 ;                        4 ;                        5 ;           15625
+     6 ;                        5 ;                        6 ;           15625
+     7 ;                        6 ;                        7 ;           15625
+
+ROUND 0: first 8 partitions
+Round ;  T(bl_ser) s ;    T(1 thr) s ;   T(N thr) s ;    Speedup ; OK?
+----- ;------------- ;-------------- ;------------- ;----------- ; ----
+  1     ;     0.000261 ;     0.212993 ;     0.044344 ;      4.803 ; OK
+  2     ;     0.000344 ;     0.210847 ;     0.046727 ;      4.512 ; OK
+  3     ;     0.000344 ;     0.210433 ;     0.031537 ;      6.673 ; OK
+  4     ;     0.000343 ;     0.214233 ;     0.031018 ;      6.907 ; OK
+  5     ;     0.000368 ;     0.216077 ;     0.032544 ;      6.639 ; OK
+  6     ;     0.000345 ;     0.216892 ;     0.033251 ;      6.523 ; OK
+  7     ;     0.000343 ;     0.211221 ;     0.031467 ;      6.712 ; OK
+  8     ;     0.000343 ;     0.211316 ;     0.031091 ;      6.797 ; OK
+  9     ;     0.000369 ;     0.211270 ;     0.031888 ;      6.625 ; OK
+  10    ;     0.000346 ;     0.211204 ;     0.031029 ;      6.807 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+  AVG   ;     0.000341 ;     0.212649 ;     0.034490 ;      6.300 ; OK
+  ----- ;------------ ;----------- ;------------ ;---------- ; ----
+
+=== Summary ===
+  Avg build_limits serial   : 0.000341 s
+  Avg time  (1 thread )     : 0.212649 s ; 18.81 MEPS
+  Avg time  (8 threads)    : 0.034490 s ; 115.98 MEPS
+  Avg histogram speedup     : 6.300x
+
+  Parallel efficiency:
+  with nthreads (8)        : 78.7%
+
+  Overall correctness       : PASS

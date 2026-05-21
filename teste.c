@@ -40,41 +40,98 @@ long long *paralel_hist;
 
 //!-------------------------------------------------------FUNÇÕES_AAAAAAAAAAAAAAAAAAAAAAAAA----------------------------------------------------------------------------------------------------
 
-static unsigned long long descobrir_tamanho_L3()
+
+static unsigned long long descobrir_maior_cache()
 {
-    FILE *f = fopen("/sys/devices/system/cpu/cpu0/cache/index3/size", "r");
+    char path[256];
 
-    if (!f)
+    int maior_level = -1;
+    unsigned long long maior_tamanho = 0;
+
+    for (int i = 0; i < 10; i++)
     {
-        perror("Erro ao abrir o arquivo de tamanho do cache");
-        exit(1);
+        snprintf(path, sizeof(path),
+                 "/sys/devices/system/cpu/cpu0/cache/index%d/level", i);
+
+        FILE *f_level = fopen(path, "r");
+
+        if (!f_level)
+            continue;
+
+        int level;
+
+        if (fscanf(f_level, "%d", &level) != 1)
+        {
+            fclose(f_level);
+            continue;
+        }
+
+        fclose(f_level);
+
+        snprintf(path, sizeof(path),
+                 "/sys/devices/system/cpu/cpu0/cache/index%d/type", i);
+
+        FILE *f_type = fopen(path, "r");
+
+        if (!f_type)
+            continue;
+
+        char type[32];
+
+        if (fscanf(f_type, "%31s", type) != 1)
+        {
+            fclose(f_type);
+            continue;
+        }
+
+        fclose(f_type);
+
+        if (strcmp(type, "Unified") != 0)
+            continue;
+
+        snprintf(path, sizeof(path),
+                 "/sys/devices/system/cpu/cpu0/cache/index%d/size", i);
+
+        FILE *f_size = fopen(path, "r");
+
+        if (!f_size)
+            continue;
+
+        unsigned long long tamanho;
+        char unit;
+
+        if (fscanf(f_size, "%llu%c", &tamanho, &unit) != 2)
+        {
+            fclose(f_size);
+            continue;
+        }
+
+        fclose(f_size);
+
+        if (unit == 'K')
+            tamanho *= 1024ULL;
+        else if (unit == 'M')
+            tamanho *= 1024ULL * 1024ULL;
+
+        if (level > maior_level)
+        {
+            maior_level = level;
+            maior_tamanho = tamanho;
+        }
     }
 
-    unsigned long long tamanho;
-    char unit;
-
-    if (fscanf(f, "%llu%c", &tamanho, &unit) != 2)
+    if (maior_level == -1)
     {
-        fprintf(stderr, "erro lendo tamanho do LLC\n");
-        fclose(f);
-        exit(1);
+        fprintf(stderr,
+                "WARNING: cache nao encontrado. Usando 8 MiB padrao.\n");
+
+        return 8ULL * 1024ULL * 1024ULL;
     }
 
-    fclose(f);
-
-    if (unit == 'K')
-    {
-        tamanho *= 1024ULL;
-    }
-    else if (unit == 'M')
-    {
-        tamanho *= 1024ULL * 1024ULL;
-    }
-
-    return tamanho;
+    return maior_tamanho;
 }
 
-static int busca_binaria(   long long valor,long long *limits,int n_faixa){
+static long long busca_binaria(   long long valor,long long *limits,int n_faixa){
    
     int comeco = 0;
     int fim = n_faixa - 1;
@@ -329,8 +386,7 @@ static void gen_test_data_balanced2(long long *data, long long nelements, int n_
     for (long long i = 0; i < nelements; i++)
         data[i] = i;
 
-    for (long long i = nelements - 1; i > 0; i--)
-    {
+    for (long long i = nelements - 1; i > 0; i--){
         long long j = (long long)(rand63() % (unsigned long long)(i + 1));
         ll_swap(&data[i], &data[j]);
     }
@@ -347,7 +403,7 @@ void histogram_serial(long long *data, long long n, long long *limits, int n_fai
     }
     for (long long i = 0; i < n; i++){
 
-        int bin = busca_binaria(data[i], limits, n_faixas);
+        long long bin = busca_binaria(data[i], limits, n_faixas);
 
         hist[bin]++;
     }
@@ -376,7 +432,7 @@ void *parallel_hist_worker(void *ptr)
 
         for (long long i = first; i < last; i++)
         {
-            int faixa =busca_binaria(parallel_data[i], paralle_limites, paralel_n_faixas);
+            long long faixa =busca_binaria(parallel_data[i], paralle_limites, paralel_n_faixas);
 
             local_hist[tid][faixa]++;
         }
@@ -425,9 +481,9 @@ void parallel_hist(long long *data, long long n, long long *limits, int n_faixas
     pthread_barrier_wait(&parallel_barrier);
 
     pthread_barrier_wait(&parallel_barrier);
-    for (int b = 0; b < n_faixas; b++)
+    for (int b = 0; b < n_faixas; b++){
         hist[b] = 0;
-
+    }
     for (int t = 0; t < nThreads; t++)
     {
         for (int b = 0; b < n_faixas; b++)
@@ -491,7 +547,7 @@ int main(int argc, char *argv[])
         strcpy(tb2_s, "(-tb2)");
     }
 
-    LLC_SIZE = descobrir_tamanho_L3();
+    LLC_SIZE = descobrir_maior_cache();
     ESVAZIA_CACHE = 3ULL * LLC_SIZE;
     inicia_vetor_cache();
 
